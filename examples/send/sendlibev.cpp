@@ -36,7 +36,7 @@ private:
      *  Method that is called when the TCP connection ends up in a connected state
      *  @param  connection  The TCP connection
      */
-    virtual void onConnected(AMQP::TcpConnection *connection) override 
+    virtual void onConnected(AMQP::TcpConnection *connection) override
     {
         std::cout << "connected" << std::endl;
     }
@@ -45,7 +45,7 @@ private:
      *  Method that is called when the TCP connection ends up in a ready
      *  @param  connection  The TCP connection
      */
-    virtual void onReady(AMQP::TcpConnection *connection) override 
+    virtual void onReady(AMQP::TcpConnection *connection) override
     {
         std::cout << "ready" << std::endl;
     }
@@ -54,7 +54,7 @@ private:
      *  Method that is called when the TCP connection is closed
      *  @param  connection  The TCP connection
      */
-    virtual void onClosed(AMQP::TcpConnection *connection) override 
+    virtual void onClosed(AMQP::TcpConnection *connection) override
     {
         std::cout << "closed" << std::endl;
     }
@@ -63,12 +63,11 @@ private:
      *  Method that is called when the TCP connection is detached
      *  @param  connection  The TCP connection
      */
-    virtual void onDetached(AMQP::TcpConnection *connection) override 
+    virtual void onDetached(AMQP::TcpConnection *connection) override
     {
         std::cout << "detached" << std::endl;
     }
-    
-    
+
 public:
     /**
      *  Constructor
@@ -82,7 +81,6 @@ public:
     virtual ~MyHandler() = default;
 };
 
-
 /**
  *  Main program
  *  @return int
@@ -91,7 +89,7 @@ int main()
 {
     // access to the event loop
     auto *loop = EV_DEFAULT;
-    
+
     // handler for libev
     MyHandler handler(loop);
 
@@ -104,37 +102,34 @@ int main()
 
     // make a connection
     AMQP::Address address("amqp://user:123@ihtiandr9.fvds.ru/");
-//    AMQP::Address address("amqps://guest:guest@localhost/");
+    //    AMQP::Address address("amqps://guest:guest@localhost/");
     AMQP::TcpConnection connection(&handler, address);
-    
+
     // we need a channel too
     AMQP::TcpChannel channel(&connection);
 
     // create a temporary queue
-    channel.declareQueue("glass",AMQP::durable).onSuccess([&connection, &channel, loop](const std::string &name, uint32_t messagecount, uint32_t consumercount) {
-        
-        // report the name of the temporary queue
-        std::cout << "declared queue " << name << std::endl;
-        
-        // close the channel
-        //channel.close().onSuccess([&connection, &channel]() {
-        //    
-        //    // report that channel was closed
-        //    std::cout << "channel closed" << std::endl;
-        //    
-        //    // close the connection
-        //    connection.close();
-        //});
-        
-        // construct a timer that is going to publish stuff
-       channel.publish("","glass", "cpp mesage00");
-        //connection.close();
-    });
-    
+    channel.declareQueue("glass", AMQP::durable).onSuccess([&connection, &channel, loop](const std::string &name, uint32_t messagecount, uint32_t consumercount)
+                                                           {
+                                                               // report the name of the temporary queue
+                                                               std::cout << "declared queue " << name << std::endl;
+
+                                                               // publish stuff
+                                                               channel.publish("", "glass", "cpp mesage00");
+                                                               // close the channel
+                                                               channel.close().onSuccess([&connection, &channel]()
+                                                                                         {
+                                                                                             // report that channel was closed
+                                                                                             std::cout << "channel closed" << std::endl;
+
+                                                                                             // close the connection
+                                                                                             connection.close();
+                                                                                         });
+                                                           });
+
     // run the loop
     ev_run(loop, 0);
 
     // done
     return 0;
 }
-
