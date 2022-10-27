@@ -41,6 +41,7 @@ int main(int argc, char *argv[])
                                                                std::cout << "declared queue " << name << std::endl;
                                                                // construct a timer that is going to publish stuff
                                                                channel.publish("", "glass", "cpp mesage00");
+                                                               connection.close();
                                                            });
 
     // run the loop
