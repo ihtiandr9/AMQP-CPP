@@ -30,3 +30,13 @@ add_executable(amqpcpp_libuv_example libuv.cpp)
 add_dependencies(amqpcpp_libuv_example amqpcpp)
 
 target_link_libraries(amqpcpp_libuv_example amqpcpp uv pthread dl ssl)
+
+###################################
+# Libev_send
+###################################
+
+add_executable(amqpcpp_libev_send send.cpp)
+
+add_dependencies(amqpcpp_libev_send amqpcpp)
+
+target_link_libraries(amqpcpp_libev_send amqpcpp ev pthread dl ssl)
