@@ -47,3 +47,11 @@ target_link_libraries(amqpcpp_libuv_example amqpcpp uv pthread dl ssl)
 ###################################
 
 add_subdirectory(send)
+# Libev_send
+###################################
+
+add_executable(amqpcpp_libev_send send.cpp)
+
+add_dependencies(amqpcpp_libev_send amqpcpp)
+
+target_link_libraries(amqpcpp_libev_send amqpcpp ev pthread dl ssl)
