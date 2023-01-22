@@ -39,6 +39,24 @@ Tagger::Tagger(Channel &channel) : _implementation(channel._implementation)
 }
 
 /**
+ *  Destructor
+ */
+Tagger::~Tagger()
+{
+    // restore the error-callback
+    _implementation->onError(nullptr);
+    
+    // also unset the callbacks for onAck and onNack
+    auto *deferred = _implementation->confirm();
+    
+    // unlikely case that the onAck and onNack are not set
+    if (deferred == nullptr) return;
+    
+    // unset the callbacks
+    deferred->onAck(nullptr).onNack(nullptr);
+}
+
+/**
  *  Send method for a frame
  *  @param  id
  *  @param  frame
