@@ -4,11 +4,11 @@ include_directories(SYSTEM)
 # Boost
 ###################################
 
-add_executable(amqpcpp_boost_example libboostasio.cpp)
+##add_executable(amqpcpp_boost_example libboostasio.cpp)
 
-add_dependencies(amqpcpp_boost_example amqpcpp)
+##add_dependencies(amqpcpp_boost_example amqpcpp)
 
-target_link_libraries(amqpcpp_boost_example amqpcpp boost_system pthread dl ssl)
+##target_link_libraries(amqpcpp_boost_example amqpcpp boost_system pthread dl ssl)
 
 ###################################
 # Libev
