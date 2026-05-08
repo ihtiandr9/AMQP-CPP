@@ -9,6 +9,7 @@
 /**
  *  Dependencies
  */
+#include <iostream>
 #include <event2/event.h>
 #include <amqpcpp.h>
 #include <amqpcpp/libevent.h>
@@ -18,8 +19,10 @@
  *  Main program
  *  @return int
  */
-int main()
+int main(int argc, char *argv[])
 {
+    const char *url = (argc > 1) ? argv[1] : "amqp://guest:guest@localhost/";
+
     // access to the event loop
     auto evbase = event_base_new();
 
@@ -27,7 +30,7 @@ int main()
     AMQP::LibEventHandler handler(evbase);
 
     // make a connection
-    AMQP::TcpConnection connection(&handler, AMQP::Address("amqp://localhost/"));
+    AMQP::TcpConnection connection(&handler, AMQP::Address(url));
 
     // we need a channel too
     AMQP::TcpChannel channel(&connection);
@@ -50,4 +53,3 @@ int main()
     // done
     return 0;
 }
-

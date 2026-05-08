@@ -10,6 +10,7 @@
 /**
  *  Dependencies
  */
+#include <iostream>
 #include <ev.h>
 #include <amqpcpp.h>
 #include <amqpcpp/libev.h>
@@ -156,8 +157,10 @@ public:
  *  Main program
  *  @return int
  */
-int main()
+int main(int argc, char *argv[])
 {
+    const char *url = (argc > 1) ? argv[1] : "amqp://guest:guest@localhost/";
+
     // access to the event loop
     auto *loop = EV_DEFAULT;
     
@@ -172,8 +175,7 @@ int main()
 #endif
 
     // make a connection
-    AMQP::Address address("amqp://guest:guest@localhost/");
-//    AMQP::Address address("amqps://guest:guest@localhost/");
+    AMQP::Address address(url);
     AMQP::TcpConnection connection(&handler, address);
     
     // we need a channel too
@@ -232,4 +234,3 @@ int main()
     // done
     return 0;
 }
-

@@ -10,6 +10,7 @@
 /**
  *  Dependencies
  */
+#include <iostream>
 #include <uv.h>
 #include <amqpcpp.h>
 #include <amqpcpp/libuv.h>
@@ -56,16 +57,18 @@ public:
  *  Main program
  *  @return int
  */
-int main()
+int main(int argc, char *argv[])
 {
+    const char *url = (argc > 1) ? argv[1] : "amqp://guest:guest@localhost/";
+
     // access to the event loop
     auto *loop = uv_default_loop();
     
-    // handler for libev
+    // handler for libuv
     MyHandler handler(loop);
     
     // make a connection
-    AMQP::TcpConnection connection(&handler, AMQP::Address("amqp://guest:guest@localhost/"));
+    AMQP::TcpConnection connection(&handler, AMQP::Address(url));
     
     // we need a channel too
     AMQP::TcpChannel channel(&connection);
@@ -75,6 +78,9 @@ int main()
         
         // report the name of the temporary queue
         std::cout << "declared queue " << name << std::endl;
+        
+        // close the connection
+        connection.close();
     });
     
     // run the loop
@@ -83,4 +89,3 @@ int main()
     // done
     return 0;
 }
-
